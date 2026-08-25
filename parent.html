@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#fff8ec" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/parent.css" />
+  <title>Modo dos pais - Palavras da Alice</title>
+</head>
+<body class="parent">
+  <header class="parent-header">
+    <a href="index.html" class="back-link">‹ voltar pro app</a>
+    <h1>Modo dos pais</h1>
+  </header>
+
+  <nav class="parent-tabs">
+    <button class="tab-btn active" data-tab="review">Revisão de hoje</button>
+    <button class="tab-btn" data-tab="record">Gravar vozes</button>
+  </nav>
+
+  <section id="tab-review" class="tab-panel active">
+    <p class="hint">
+      Ouça cada tentativa da Alice e marque certo/errado. Isso alimenta a
+      repetição das palavras e o resumo da noite.
+    </p>
+    <div id="review-list"></div>
+    <button id="finish-review-btn" class="primary-btn">Concluir revisão da noite</button>
+
+    <div id="summary-box" hidden>
+      <h2>Resumo de hoje</h2>
+      <p id="summary-text"></p>
+      <h3>Sugestões pra usar na rotina</h3>
+      <ul id="routine-suggestions"></ul>
+      <button id="share-btn" class="primary-btn">Compartilhar resumo</button>
+    </div>
+  </section>
+
+  <section id="tab-record" class="tab-panel">
+    <p class="hint">
+      Grave a pronúncia de vocês nas palavras que conseguirem falar bem. O que
+      não for gravado usa a voz sintética automaticamente.
+    </p>
+    <div id="record-list"></div>
+  </section>
+
+  <script src="js/db.js"></script>
+  <script src="js/recorder.js"></script>
+  <script src="js/parent.js"></script>
+</body>
+</html>

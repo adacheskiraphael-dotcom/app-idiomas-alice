@@ -1,0 +1,169 @@
+/* Tela dos pais - aqui pode ter texto normalmente (nao e a tela da Alice) */
+
+body.parent {
+  overflow-y: auto;
+  height: auto;
+  min-height: 100vh;
+  -webkit-user-select: auto;
+  user-select: auto;
+  color: #3a2f21;
+  padding-bottom: 48px;
+}
+
+.parent-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px max(16px, env(safe-area-inset-top));
+  background: #fff;
+  border-bottom: 1px solid #eee0cc;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.back-link {
+  color: #b5793a;
+  text-decoration: none;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.parent-header h1 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.parent-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px 0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 10px 10px 0 0;
+  background: #f1e6d1;
+  color: #7a6448;
+  font-size: 0.95rem;
+}
+
+.tab-btn.active {
+  background: #ffc857;
+  color: #3a2f21;
+  font-weight: 600;
+}
+
+.tab-panel {
+  display: none;
+  padding: 16px 20px 40px;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.hint {
+  color: #7a6448;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+.round-row,
+.record-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #fff;
+  border: 1px solid #eee0cc;
+  border-radius: 12px;
+}
+
+.round-row .emoji,
+.record-row .emoji {
+  font-size: 2rem;
+}
+
+.round-row .label,
+.record-row .label {
+  flex: 1;
+}
+
+.round-row .lang-tag,
+.record-row .lang-tag {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #b5793a;
+  background: #fdf0d8;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.icon-btn {
+  border: none;
+  background: #f1e6d1;
+  border-radius: 999px;
+  width: 40px;
+  height: 40px;
+  font-size: 1.1rem;
+}
+
+.icon-btn.correct.selected {
+  background: #6bc78a;
+  color: #fff;
+}
+
+.icon-btn.incorrect.selected {
+  background: #e08a6b;
+  color: #fff;
+}
+
+.icon-btn.recording {
+  background: #e08a6b;
+  color: #fff;
+}
+
+.primary-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: #ffc857;
+  color: #3a2f21;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 12px;
+}
+
+#summary-box {
+  margin-top: 24px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #eee0cc;
+}
+
+#routine-suggestions li {
+  margin-bottom: 6px;
+}
+
+.status-tag {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.status-tag.recorded {
+  background: #e3f3e8;
+  color: #2f7a4d;
+}
+
+.status-tag.tts {
+  background: #f1e6d1;
+  color: #7a6448;
+}

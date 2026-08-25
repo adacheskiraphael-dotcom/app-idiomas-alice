@@ -1,0 +1,74 @@
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #fff8ec;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+#stage {
+  /* 100dvh nao existe no Safari do iOS 12.5.8 (aparelho alvo) - usa 100vh,
+     que e confiavel em modo standalone (sem barra de endereco pra recalcular) */
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+#word-image {
+  font-size: min(60vw, 60vh);
+  line-height: 1;
+  transition: transform 0.15s ease;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.12));
+}
+
+#word-image.bounce {
+  animation: bounce 0.7s ease;
+}
+
+@keyframes bounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.15); }
+  55% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+#status-dot {
+  position: fixed;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e0d7c6;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+#status-dot[data-state="playing"] { background: #ffc857; }
+#status-dot[data-state="listening"] {
+  background: #6bc78a;
+  box-shadow: 0 0 0 6px rgba(107, 199, 138, 0.25);
+}
+#status-dot[data-state="success"] { background: #4caf7d; }
+
+#parent-corner {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 64px;
+  height: 64px;
+  z-index: 10;
+}

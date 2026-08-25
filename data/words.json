@@ -1,0 +1,47 @@
+{
+  "languages": ["en", "es", "fr", "it"],
+  "words": [
+    {
+      "id": "xicara",
+      "pt": "xícara",
+      "emoji": "🥤",
+      "translations": { "en": "cup", "es": "taza", "fr": "tasse", "it": "tazza" },
+      "routine_tip_pt": "Use na hora do lanche, quando ela pegar a xícara dela."
+    },
+    {
+      "id": "cachorro",
+      "pt": "cachorro",
+      "emoji": "🐶",
+      "translations": { "en": "dog", "es": "perro", "fr": "chien", "it": "cane" },
+      "routine_tip_pt": "Use quando virem um cachorro no passeio ou em desenhos."
+    },
+    {
+      "id": "sapato",
+      "pt": "sapato",
+      "emoji": "👟",
+      "translations": { "en": "shoe", "es": "zapato", "fr": "chaussure", "it": "scarpa" },
+      "routine_tip_pt": "Use na hora de calçar pra sair de casa."
+    },
+    {
+      "id": "bola",
+      "pt": "bola",
+      "emoji": "⚽",
+      "translations": { "en": "ball", "es": "pelota", "fr": "balle", "it": "palla" },
+      "routine_tip_pt": "Use na hora de brincar no parque ou em casa."
+    },
+    {
+      "id": "agua",
+      "pt": "água",
+      "emoji": "💧",
+      "translations": { "en": "water", "es": "agua", "fr": "eau", "it": "acqua" },
+      "routine_tip_pt": "Use na hora de oferecer água pra ela beber."
+    },
+    {
+      "id": "livro",
+      "pt": "livro",
+      "emoji": "📖",
+      "translations": { "en": "book", "es": "libro", "fr": "livre", "it": "libro" },
+      "routine_tip_pt": "Use na hora da historinha antes de dormir."
+    }
+  ]
+}
