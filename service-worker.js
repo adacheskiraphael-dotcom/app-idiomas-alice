@@ -1,7 +1,7 @@
 // Service worker cache-first, vanilla (sem Workbox).
 // Sobe a versao do cache sempre que a lista de assets mudar (ex: Fase 6,
 // quando entrarem os ~40 objetos com imagem/audio reais).
-const CACHE_VERSION = "v4";
+const CACHE_VERSION = "v5";
 const CACHE_NAME = `alice-idiomas-${CACHE_VERSION}`;
 
 const APP_SHELL = [

@@ -1,18 +1,28 @@
 * {
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
 }
 
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  overflow: hidden;
   background: #fff8ec;
   font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Trava de tela (sem scroll, sem selecionar texto, sem zoom por toque) -
+   e SO pra tela da Alice (body.game). A tela dos pais precisa rolar
+   normalmente, e isso vazando pra ela foi o bug do "nao rola pra baixo"
+   no iOS. */
+body.game {
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 #stage {
