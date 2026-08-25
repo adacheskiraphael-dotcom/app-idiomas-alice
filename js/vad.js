@@ -9,9 +9,13 @@
 
 class VoiceActivityDetector {
   constructor({
-    threshold = 0.05, // RMS minimo pra considerar "falando"
-    minSpeechMs = 350, // duracao minima de som acima do limiar
-    silenceGraceMs = 250, // tolerancia a micro-silencios dentro da fala
+    // Limiares propositalmente tolerantes: e melhor a rodada avancar cedo
+    // demais (ela so ouve a palavra de novo no dia seguinte) do que ela ter
+    // que repetir varias vezes ate o app "ouvir". Ajustar aqui se, no uso
+    // real, estiver passando rodada sem ela falar nada.
+    threshold = 0.025, // RMS minimo pra considerar "falando"
+    minSpeechMs = 280, // duracao minima de som acima do limiar
+    silenceGraceMs = 350, // tolerancia a micro-silencios/gagueira no meio da fala
   } = {}) {
     this.threshold = threshold;
     this.minSpeechMs = minSpeechMs;

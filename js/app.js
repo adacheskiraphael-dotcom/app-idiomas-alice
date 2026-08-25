@@ -15,6 +15,7 @@ let queueIndex = 0;
 let sharedStream = null;
 let sharedAudioCtx = null; // criado/desbloqueado no 1o toque - iOS exige gesto do usuario
 let awaitingTap = true;
+const audioBufferCache = new Map(); // src -> AudioBuffer decodado, evita rebaixar/redecodificar toda rodada
 
 const SPEECH_SYNTH_FALLBACK_LANG = {
   en: "en-US",
@@ -68,44 +69,78 @@ function speakFallback(text, lang) {
   });
 }
 
-function playBlob(blob) {
+// Toca tudo pelo MESMO AudioContext usado pro microfone (em vez de um
+// elemento <audio> separado). No Safari (iOS e macOS), alternar entre tocar
+// por <audio> e gravar por getUserMedia forca uma troca de "modo" na sessao
+// de audio do sistema que trava por 1-3s toda vez - era essa a "trava
+// aleatoria entre as fases" relatada no teste. Mantendo tudo no mesmo grafo
+// de audio, a sessao fica sempre em modo "tocar e gravar" e nao precisa
+// renegociar nada a cada rodada.
+function playBuffer(buffer, audioCtx) {
   return new Promise((resolve) => {
-    const url = URL.createObjectURL(blob);
-    const audio = new Audio(url);
-    const cleanup = () => {
-      URL.revokeObjectURL(url);
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(audioCtx.destination);
+
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      clearTimeout(safety);
       resolve();
     };
-    audio.onended = cleanup;
-    audio.onerror = cleanup;
-    audio.play().catch(cleanup);
+
+    // Rede de seguranca: se o AudioContext nao conseguir tocar de verdade
+    // (por qualquer motivo - suspenso, aparelho recusou, etc.) o evento
+    // "onended" nunca dispara e a rodada trava pra sempre. Isso e pior que
+    // so seguir em frente sem o audio ter tocado direito.
+    const safety = setTimeout(finish, buffer.duration * 1000 + 3000);
+
+    source.onended = finish;
+    try {
+      source.start(0);
+    } catch (err) {
+      console.error("Falha ao iniciar playback:", err);
+      finish();
+    }
   });
 }
 
-async function playWordAudio(word, lang) {
+async function loadStaticBuffer(src, audioCtx) {
+  if (audioBufferCache.has(src)) return audioBufferCache.get(src);
+
+  const res = await fetch(src);
+  if (!res.ok) return null;
+
+  const arrayBuffer = await res.arrayBuffer();
+  const buffer = await audioCtx.decodeAudioData(arrayBuffer).catch(() => null);
+  if (buffer) audioBufferCache.set(src, buffer);
+  return buffer;
+}
+
+async function loadBlobBuffer(blob, audioCtx) {
+  const arrayBuffer = await blob.arrayBuffer();
+  return audioCtx.decodeAudioData(arrayBuffer).catch(() => null);
+}
+
+async function playWordAudio(word, lang, audioCtx) {
   setStatus("playing");
 
   // 1) gravacao dos pais (prioridade - Fase 4, painel dos pais)
   const custom = await window.AliceDB.getCustomAudio(word.id, lang).catch(() => null);
   if (custom && custom.blob) {
-    await playBlob(custom.blob);
-    return;
+    const buffer = await loadBlobBuffer(custom.blob, audioCtx);
+    if (buffer) {
+      await playBuffer(buffer, audioCtx);
+      return;
+    }
   }
 
   // 2) audio estatico pre-gerado (TTS, empacotado no app)
   const src = `assets/audio/${word.id}_${lang}.mp3`;
-  const hasFile = await fetch(src, { method: "HEAD" }).then(
-    (r) => r.ok,
-    () => false
-  );
-
-  if (hasFile) {
-    await new Promise((resolve) => {
-      const audio = new Audio(src);
-      audio.onended = resolve;
-      audio.onerror = resolve;
-      audio.play().catch(resolve);
-    });
+  const buffer = await loadStaticBuffer(src, audioCtx).catch(() => null);
+  if (buffer) {
+    await playBuffer(buffer, audioCtx);
     return;
   }
 
@@ -116,12 +151,14 @@ async function playWordAudio(word, lang) {
   await speakFallback(word.translations[lang], lang);
 }
 
-function ensureAudioContext() {
+async function ensureAudioContext() {
   if (!sharedAudioCtx) {
     sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
   if (sharedAudioCtx.state === "suspended") {
-    sharedAudioCtx.resume();
+    await sharedAudioCtx.resume().catch((err) => {
+      console.error("Nao consegui retomar o AudioContext:", err);
+    });
   }
   return sharedAudioCtx;
 }
@@ -148,18 +185,22 @@ async function onStageTap() {
   awaitingTap = false;
 
   // Desbloqueia audio/mic dentro do gesto de toque (essencial no iOS antigo).
-  const audioCtx = ensureAudioContext();
+  const audioCtx = await ensureAudioContext();
 
   const { word, lang } = queue[queueIndex];
   queueIndex++;
 
-  await playWordAudio(word, lang);
-
-  setStatus("listening");
+  // Pede o microfone ANTES de tocar a palavra: assim a sessao de audio do
+  // aparelho ja fica em modo "tocar e gravar" antes do playback comecar, e
+  // nao precisa trocar de modo no meio da rodada (era essa troca que travava).
   const stream = await ensureStream().catch((err) => {
     console.error("Microfone indisponivel:", err);
     return null;
   });
+
+  await playWordAudio(word, lang, audioCtx);
+
+  setStatus("listening");
 
   let spoke = false;
   let clip = null;
